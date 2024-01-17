@@ -796,6 +796,9 @@ func (d *Document) onNewRelationship(decMap *zippkg.DecodeMap, target, typ strin
 					return err
 				}
 				iref = common.MakeImageRef(img, &d.DocBase, d.docRels)
+				//设置图片ID
+				iref.SetRelID(rel.IdAttr)
+
 				d.Images = append(d.Images, iref)
 				files[i] = nil
 			}

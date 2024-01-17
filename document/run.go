@@ -49,6 +49,39 @@ func (r Run) Text() string {
 	return buf.String()
 }
 
+//获取文本数组
+func (r Run) Texts() (texts []string) {
+	if len(r.x.EG_RunInnerContent) == 0 {
+		return
+	}
+	for _, ic := range r.x.EG_RunInnerContent {
+		if ic.T != nil {
+			texts = append(texts , ic.T.Content)
+		}
+	}
+	return
+}
+
+//替换文本
+func (r Run) ReplaceTexts(replaceTexts []string)  {
+	if len(r.x.EG_RunInnerContent) == 0 {
+		return
+	}
+	var (
+		i int
+	)
+	for _, ic := range r.x.EG_RunInnerContent {
+		if ic.T != nil {
+			if i <= len(replaceTexts)-1 {
+				ic.T.Content = replaceTexts[i]
+			}
+			i++
+		}
+	}
+	return
+}
+
+
 // ClearContent clears any content in the run (text, tabs, breaks, etc.)
 func (r Run) ClearContent() {
 	r.x.EG_RunInnerContent = nil
@@ -142,6 +175,21 @@ func (r Run) DrawingAnchored() []AnchoredDrawing {
 		}
 		for _, anc := range ic.Drawing.Anchor {
 			ret = append(ret, AnchoredDrawing{r.d, anc})
+		}
+	}
+	return ret
+}
+
+
+// InlineDrawing returns a slice of InlineDrawings.
+func (r Run) InlineDrawing() []InlineDrawing {
+	ret := []InlineDrawing{}
+	for _, ic := range r.x.EG_RunInnerContent {
+		if ic.Drawing == nil {
+			continue
+		}
+		for _, anc := range ic.Drawing.Inline {
+			ret = append(ret, InlineDrawing{r.d, anc})
 		}
 	}
 	return ret
